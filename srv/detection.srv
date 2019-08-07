@@ -1,0 +1,4 @@
+sensor_msgs/Image RGB_im
+string obj_name
+--- 
+float32[] data

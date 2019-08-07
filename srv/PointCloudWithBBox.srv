@@ -1,0 +1,5 @@
+sensor_msgs/PointCloud2 input_pc
+geometry_msgs/Point bbox_corner1
+geometry_msgs/Point bbox_corner2
+---
+bool result
