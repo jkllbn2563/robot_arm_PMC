@@ -10,3 +10,8 @@ item{
 id:3
 name:'tripod'
 }
+item{
+id:4
+name:'USB'
+}
+
