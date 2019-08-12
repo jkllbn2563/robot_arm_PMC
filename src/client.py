@@ -49,6 +49,7 @@ def handle_function_willie(req):
 	#width,high=image_.size
 	print("image size is",high,width)
 	bbox_data=bbox_calculation()
+	#print(type(bbox_data))
 	#point1.y = bbox_data.data[0]*high
 	#point1.x = bbox_data.data[1]*width
 	#point2.y = bbox_data.data[2]*high
@@ -63,7 +64,8 @@ def handle_function_willie(req):
 	read_point_cloud_prohibit = False
 	#return point_cloud, point1, point2
 	print("scaling: ",bbox_scale)
-	return bbox_scale
+	#print(type(bbox_scale))
+	return detection_PMC_halfResponse(bbox_scale)
 		
 
 
@@ -79,8 +81,8 @@ def bbox_calculation():
 		read_point_cloud_prohibit = True
 		bbox=detection_client(img)
 		#print(bbox.data)
-		if bbox.data==(0.0,0.0,0.0,0.0):
-			print("There is no %s on the table"%object_name)
+		#if bbox.data==(0.0,0.0,0.0,0.0):
+			#print("There is no %s on the table"%object_name)
 		return bbox
 
 	except rospy.ServiceException, e:
