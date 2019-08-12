@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge,CvBridgeError
 
 import numpy as np
