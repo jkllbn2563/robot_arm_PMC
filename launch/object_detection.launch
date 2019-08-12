@@ -1,0 +1,11 @@
+<launch>
+
+  <!--assistant related-->
+  <param name="model_path" value="$(find robot_arm_PMC)/src/ssd_mobilenet_v1_coco_2017_11_17/output_inference_graph_v7.pb/frozen_inference_graph.pb" />
+  <param name="label_path" value="$(find robot_arm_PMC)/src/data/label_map.pbtxt" />
+
+  <node name="detection_server" pkg="robot_arm_PMC" type="server_launch.py" output="screen"/>
+
+  <node name="client_node" pkg="robot_arm_PMC" type="client.py"/>
+
+</launch>
