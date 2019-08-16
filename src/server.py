@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge,CvBridgeError
 
 import numpy as np
@@ -338,7 +338,7 @@ if __name__== '__main__':
 
 	# Path to frozen detection graph. This is the actual model that is used for the object detection.
 	#PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
-	PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/output_inference_graph_v7.pb'+'/frozen_inference_graph.pb'
+	PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/output_inference_graph_v8.pb'+'/frozen_inference_graph.pb'
 
 	# List of the strings that is used to add correct label for each box.
 	#PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
