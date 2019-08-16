@@ -196,26 +196,16 @@ def handle_function(req):
 	  use_normalized_coordinates=True,
 	  min_score_thresh=.1,
 	  line_thickness=8)
-	print(image_np.size)
+	#print(image_np.size)
 	plt.figure(figsize=IMAGE_SIZE)
 	plt.imshow(image_np)
 	plt.show()
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
-	print("image size is",high,width)
-	print (filtered_dict['detection_boxes'].shape)
-	#print(type(filtered_box_dict['detection_scores']))
-	#print("apple",filtered_camera_dict['detection_scores'])
-	#print(filtered_camera_dict['detection_boxes'])
-	#print(type(filtered_box_dict['detection_boxes']))
-	#print(len(filtered_box_dict['detection_scores']))
-	#print(len(filtered_box_dict['detection_boxes']))
-	#print(len(filtered_camera_dict['detection_scores']))
-	#print(len(filtered_camera_dict['detection_boxes']))
-	#print(len(filtered_USB_dict['detection_scores']))
-	#print(len(filtered_USB_dict['detection_boxes']))
-	#print(len(filtered_tripod_dict['detection_scores']),"hellow")
+	#print("image size is",high,width)
+	#print (filtered_dict['detection_boxes'].shape)
+	
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
 		if v>0.1:
@@ -295,7 +285,7 @@ def handle_function(req):
 	else:
 		#bbox_data_box=list(filtered_box_dict['detection_boxes'])
 		print(filtered_box_num_dict['detection_scores'])
-		print(type(filtered_box_dict['detection_scores']))
+		#print(type(filtered_box_dict['detection_scores']))
 		bbox_data_box=filtered_box_num_dict['detection_boxes'].tolist()
 
 		print("box num:",len(bbox_data_box),"on the table")
@@ -312,8 +302,8 @@ def handle_function(req):
 	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
-	print(len(bbox_data))
-	print("bbox:the whole things at ",bbox_data)
+	#print(len(bbox_data))
+	print("the whole things at ",bbox_data)
 	#bbox_result=[]
 	#print(type(bbox_result))
 	#for i in bbox_data:
@@ -332,17 +322,18 @@ def handle_function(req):
 
 if __name__== '__main__':
 	# What model to download.
-	MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
+	#MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
 	#MODEL_FILE = MODEL_NAME + '.tar.gz'
 	#DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 
 	# Path to frozen detection graph. This is the actual model that is used for the object detection.
 	#PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
-	PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/output_inference_graph_v7.pb'+'/frozen_inference_graph.pb'
+	PATH_TO_FROZEN_GRAPH = rospy.get_param("model_path")
 
 	# List of the strings that is used to add correct label for each box.
 	#PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
-	PATH_TO_LABELS = os.path.join('data', 'label_map.pbtxt')
+	#PATH_TO_LABELS = os.path.join('data', 'label_map.pbtxt')
+	PATH_TO_LABELS=rospy.get_param("label_path")
 
 	"""
 	opener = urllib.request.URLopener()
@@ -352,7 +343,6 @@ if __name__== '__main__':
 	  file_name = os.path.basename(file.name)
 	  if 'frozen_inference_graph.pb' in file_name:
 	    tar_file.extract(file, os.getcwd())
-
 	"""
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
@@ -371,8 +361,4 @@ if __name__== '__main__':
 	if rospy.is_shutdown():
 			exit(-1)
 	server_srv()
-
-
-
-    		
 

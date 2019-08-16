@@ -63,7 +63,7 @@ def handle_function_willie(req):
 	read_point_cloud_prohibit = False
 	#return point_cloud, point1, point2
 	print("scaling: ",bbox_scale)
-	return bbox_scale
+	return detection_PMC_halfResponse(bbox_scale)
 		
 
 
