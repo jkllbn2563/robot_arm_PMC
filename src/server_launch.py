@@ -143,7 +143,7 @@ def handle_function(req):
 		      #if len(filtered_camera_dict['detection_classes'])==2:
 		      break
 
-		                
+
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==3):
 		      filtered_tripod_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
@@ -153,8 +153,8 @@ def handle_function(req):
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
 		      #if len(filtered_tripod_dict['detection_classes']) ==2:
-		      break	
-		   	
+		      break
+
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==4):
 		      filtered_USB_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
@@ -166,7 +166,7 @@ def handle_function(req):
 		      #if len(filtered_USB_dict['detection_classes'])==2:
 		      break
 
-		      	                                        
+
 
 
 	filtered_dict['detection_boxes'] = np.array(filtered_dict['detection_boxes'])
@@ -175,9 +175,9 @@ def handle_function(req):
 	filtered_tripod_dict['detection_boxes'] = np.array(filtered_tripod_dict['detection_boxes'])
 	filtered_USB_dict['detection_boxes'] = np.array(filtered_USB_dict['detection_boxes'])
 
-	
+
 	filtered_dict['detection_classes'] = np.array(filtered_dict['detection_classes'])
-	
+
 	filtered_dict['detection_scores'] = np.array(filtered_dict['detection_scores'])
 	print(filtered_dict['detection_classes'])
 	print(filtered_dict['detection_scores'])
@@ -205,7 +205,7 @@ def handle_function(req):
 	high,width=img.size
 	#print("image size is",high,width)
 	#print (filtered_dict['detection_boxes'].shape)
-	
+
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
 		if v>0.1:
@@ -246,7 +246,7 @@ def handle_function(req):
 		print("the camera is at ", bbox_data_camera)
 		print("camera num:",len(bbox_data_camera),"on the table")
 				#bbox_data_return=bbox_data.pop(0)
-				
+
 	if (filtered_tripod_num_dict['detection_boxes'].shape[0]==0):
 		print("There is no tripod on the table")
 		bbox_data_tripod=[[0.,0.,0.,0.]]
@@ -260,7 +260,7 @@ def handle_function(req):
 		print("the tripod is at ", bbox_data_tripod)
 		print("tripod num:",len(bbox_data_tripod),"on the table")
 
-	
+
 
 	if (filtered_USB_num_dict['detection_boxes'].shape[0]==0):
 		print("There is no USB on the table")
@@ -277,7 +277,7 @@ def handle_function(req):
 
 
 	if (filtered_box_num_dict['detection_boxes'].shape[0]==0):
-	
+
 		print("There is no box on the table")
 		bbox_data_box=[[0.,0.,0.,0.]]
 
@@ -298,7 +298,7 @@ def handle_function(req):
 	bbox_USB_one=bbox_data_USB.pop(0)
 	bbox_box_one=bbox_data_box.pop(0)
 
-	
+
 	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
@@ -313,12 +313,12 @@ def handle_function(req):
 
 
 
-	
 
-	
+
+
 
 	return detection_PMCResponse(bbox_data)
-  
+
 
 if __name__== '__main__':
 	# What model to download.
@@ -328,7 +328,7 @@ if __name__== '__main__':
 
 	# Path to frozen detection graph. This is the actual model that is used for the object detection.
 	#PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
-	PATH_TO_FROZEN_GRAPH = rospy.get_param("model_path")
+	PATH_TO_FROZEN_GRAPH = rospy.get_param("recognition_model_path")
 
 	# List of the strings that is used to add correct label for each box.
 	#PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
@@ -361,4 +361,3 @@ if __name__== '__main__':
 	if rospy.is_shutdown():
 			exit(-1)
 	server_srv()
-
