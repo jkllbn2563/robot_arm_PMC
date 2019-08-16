@@ -129,8 +129,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      if len(filtered_box_dict['detection_classes'])==2:
-					break
+		      #if len(filtered_box_dict['detection_classes'])==2:
+		      break
 		      #break
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==2):
@@ -140,8 +140,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      if len(filtered_camera_dict['detection_classes'])==2:
-					break
+		      #if len(filtered_camera_dict['detection_classes'])==2:
+		      break
 
 
 	for i in range(len(output_dict['detection_classes'])):
@@ -152,8 +152,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      if len(filtered_tripod_dict['detection_classes']) ==2:
-					break
+		      #if len(filtered_tripod_dict['detection_classes']) ==2:
+		      break
 
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==4):
@@ -163,8 +163,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      if len(filtered_USB_dict['detection_classes'])==2:
-					break
+		      #if len(filtered_USB_dict['detection_classes'])==2:
+		      break
 
 
 
@@ -179,9 +179,9 @@ def handle_function(req):
 	filtered_dict['detection_classes'] = np.array(filtered_dict['detection_classes'])
 
 	filtered_dict['detection_scores'] = np.array(filtered_dict['detection_scores'])
-	print(filtered_dict['detection_classes'])
-	print(filtered_dict['detection_scores'])
-	print(type(filtered_dict['detection_classes']))
+	#print(filtered_dict['detection_classes'])
+	#print(filtered_dict['detection_scores'])
+	#print(type(filtered_dict['detection_classes']))
 	# Visualization of the results of a detection.
 	vis_util.visualize_boxes_and_labels_on_image_array(
 	  image_np,
@@ -196,15 +196,15 @@ def handle_function(req):
 	  use_normalized_coordinates=True,
 	  min_score_thresh=.1,
 	  line_thickness=8)
-	print(image_np.size)
+	#print(image_np.size)
 	plt.figure(figsize=IMAGE_SIZE)
 	plt.imshow(image_np)
 	plt.show()
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
-	print("image size is",high,width)
-	print (filtered_dict['detection_boxes'].shape)
+	#print("image size is",high,width)
+	#print (filtered_dict['detection_boxes'].shape)
 	#print(type(filtered_box_dict['detection_scores']))
 	#print("apple",filtered_camera_dict['detection_scores'])
 	#print(filtered_camera_dict['detection_boxes'])
@@ -219,22 +219,15 @@ def handle_function(req):
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
 		if v>0.1:
-			print(i,"p")
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
-
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
 		if v>0.1:
-			print(i,"pp")
-
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_USB_dict['detection_scores']):
 		if v>0.1:
-			print(i,"ppp")
-
 			filtered_USB_num_dict['detection_boxes'].append(filtered_USB_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_tripod_dict['detection_scores']):
 		if v>0.1:
-			print(i,"pppp")
 			filtered_tripod_num_dict['detection_boxes'].append(filtered_tripod_dict['detection_boxes'].tolist()[i])
 
 	filtered_box_num_dict['detection_boxes']=np.array(filtered_box_num_dict['detection_boxes'])
@@ -245,7 +238,7 @@ def handle_function(req):
 
 
 	if (filtered_camera_num_dict['detection_boxes'].shape[0]==0):
-		print("There is no camera on the table")
+		rospy.logwarn("recognition:: There is no camera on the table")
 		bbox_data_camera=[[0.,0.,0.,0.]]
 
 		bbox_data=[0.,0.,0.,0.]
@@ -253,12 +246,12 @@ def handle_function(req):
 		#bbox_data_camera=list(filtered_camera_dict['detection_boxes'])
 		bbox_data_camera=filtered_camera_num_dict['detection_boxes'].tolist()
 
-		print("the camera is at ", bbox_data_camera)
-		print("camera num:",len(bbox_data_camera),"on the table")
+		#rospy.logwarn("recognition:: the camera is at %s", bbox_data_camera)
+		rospy.logwarn("recognition:: camera num: %d on the table.",len(bbox_data_camera))
 				#bbox_data_return=bbox_data.pop(0)
 
 	if (filtered_tripod_num_dict['detection_boxes'].shape[0]==0):
-		print("There is no tripod on the table")
+		rospy.logwarn("recognition:: There is no tripod on the table")
 		bbox_data_tripod=[[0.,0.,0.,0.]]
 
 		bbox_data=[0.,0.,0.,0.]
@@ -267,13 +260,12 @@ def handle_function(req):
 		#bbox_data_tripod=list(filtered_tripod_dict['detection_boxes'])
 		bbox_data_tripod=filtered_tripod_num_dict['detection_boxes'].tolist()
 
-		print("the tripod is at ", bbox_data_tripod)
-		print("tripod num:",len(bbox_data_tripod),"on the table")
-
+		#rospy.logwarn("recognition:: the tripod is at %s", bbox_data_tripod)
+		rospy.logwarn("recognition:: tripod num: %d on the table",len(bbox_data_tripod))
 
 
 	if (filtered_USB_num_dict['detection_boxes'].shape[0]==0):
-		print("There is no USB on the table")
+		rospy.logwarn("recognition:: There is no USB on the table")
 		bbox_data=[0.,0.,0.,0.]
 		bbox_data_USB=[[0.,0.,0.,0.]]
 	else:
@@ -282,26 +274,26 @@ def handle_function(req):
 		bbox_data_USB=filtered_USB_num_dict['detection_boxes'].tolist()
 
 	#bboox_data_return=bbox_data.pop(2)
-		print("the USB is at ", bbox_data_USB)
-		print("USB num:",len(bbox_data_USB),"on the table")
+		#rospy.logwarn("recognition:: the USB is at %s", bbox_data_USB)
+		rospy.logwarn("recognition:: USB num: %d on the table.",len(bbox_data_USB))
 
 
 	if (filtered_box_num_dict['detection_boxes'].shape[0]==0):
 
-		print("There is no box on the table")
+		rospy.logwarn("recognition:: There is no box on the table")
 		bbox_data_box=[[0.,0.,0.,0.]]
 
 		bbox_data=[0.,0.,0.,0.]
 	else:
 		#bbox_data_box=list(filtered_box_dict['detection_boxes'])
-		print(filtered_box_num_dict['detection_scores'])
-		print(type(filtered_box_dict['detection_scores']))
+		#print(filtered_box_num_dict['detection_scores'])
+		#print(type(filtered_box_dict['detection_scores']))
 		bbox_data_box=filtered_box_num_dict['detection_boxes'].tolist()
 
-		print("box num:",len(bbox_data_box),"on the table")
+		rospy.logwarn("recognition:: box num: %d on the table.",len(bbox_data_box))
 
 	#bboox_data_return=bbox_data.pop(2)
-		print("the box is at ", bbox_data_box)
+		#rospy.logwarn("recognition:: the box is at %s", bbox_data_box)
 
 	bbox_camera_one=bbox_data_camera.pop(0)
 	bbox_tripod_one=bbox_data_tripod.pop(0)
@@ -312,8 +304,8 @@ def handle_function(req):
 	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
-	print(len(bbox_data))
-	print("bbox:the whole things at ",bbox_data)
+	#print(len(bbox_data))
+	#print("bbox:the whole things at ",bbox_data)
 	#bbox_result=[]
 	#print(type(bbox_result))
 	#for i in bbox_data:
