@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge,CvBridgeError
 
 import numpy as np
@@ -129,9 +129,9 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      #if len(filtered_box_dict['detection_classes'])==2:
-					#break
-		      break
+		      if len(filtered_box_dict['detection_classes'])==2:
+					break
+		      #break
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==2):
 		      filtered_camera_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
@@ -140,8 +140,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      #if len(filtered_camera_dict['detection_classes'])==2:
-		      break
+		      if len(filtered_camera_dict['detection_classes'])==2:
+					break
 
 
 	for i in range(len(output_dict['detection_classes'])):
@@ -152,8 +152,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      #if len(filtered_tripod_dict['detection_classes']) ==2:
-		      break
+		      if len(filtered_tripod_dict['detection_classes']) ==2:
+					break
 
 	for i in range(len(output_dict['detection_classes'])):
 		  if (output_dict['detection_classes'][i]==4):
@@ -163,8 +163,8 @@ def handle_function(req):
 		      filtered_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
 		      filtered_dict['detection_classes'].append(output_dict['detection_classes'][i])
 		      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
-		      #if len(filtered_USB_dict['detection_classes'])==2:
-		      break
+		      if len(filtered_USB_dict['detection_classes'])==2:
+					break
 
 
 
@@ -196,35 +196,45 @@ def handle_function(req):
 	  use_normalized_coordinates=True,
 	  min_score_thresh=.1,
 	  line_thickness=8)
-	#print(image_np.size)
+	print(image_np.size)
 	plt.figure(figsize=IMAGE_SIZE)
 	plt.imshow(image_np)
 	plt.show()
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
-	#print("image size is",high,width)
-	#print (filtered_dict['detection_boxes'].shape)
-
+	print("image size is",high,width)
+	print (filtered_dict['detection_boxes'].shape)
+	#print(type(filtered_box_dict['detection_scores']))
+	#print("apple",filtered_camera_dict['detection_scores'])
+	#print(filtered_camera_dict['detection_boxes'])
+	#print(type(filtered_box_dict['detection_boxes']))
+	#print(len(filtered_box_dict['detection_scores']))
+	#print(len(filtered_box_dict['detection_boxes']))
+	#print(len(filtered_camera_dict['detection_scores']))
+	#print(len(filtered_camera_dict['detection_boxes']))
+	#print(len(filtered_USB_dict['detection_scores']))
+	#print(len(filtered_USB_dict['detection_boxes']))
+	#print(len(filtered_tripod_dict['detection_scores']),"hellow")
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
 		if v>0.1:
-			#print(i,"p")
+			print(i,"p")
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
 
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
 		if v>0.1:
-			#print(i,"pp")
+			print(i,"pp")
 
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_USB_dict['detection_scores']):
 		if v>0.1:
-			#print(i,"ppp")
+			print(i,"ppp")
 
 			filtered_USB_num_dict['detection_boxes'].append(filtered_USB_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_tripod_dict['detection_scores']):
 		if v>0.1:
-			#print(i,"pppp")
+			print(i,"pppp")
 			filtered_tripod_num_dict['detection_boxes'].append(filtered_tripod_dict['detection_boxes'].tolist()[i])
 
 	filtered_box_num_dict['detection_boxes']=np.array(filtered_box_num_dict['detection_boxes'])
@@ -285,7 +295,7 @@ def handle_function(req):
 	else:
 		#bbox_data_box=list(filtered_box_dict['detection_boxes'])
 		print(filtered_box_num_dict['detection_scores'])
-		#print(type(filtered_box_dict['detection_scores']))
+		print(type(filtered_box_dict['detection_scores']))
 		bbox_data_box=filtered_box_num_dict['detection_boxes'].tolist()
 
 		print("box num:",len(bbox_data_box),"on the table")
@@ -302,8 +312,8 @@ def handle_function(req):
 	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
-	#print(len(bbox_data))
-	print("the whole things at ",bbox_data)
+	print(len(bbox_data))
+	print("bbox:the whole things at ",bbox_data)
 	#bbox_result=[]
 	#print(type(bbox_result))
 	#for i in bbox_data:
@@ -343,6 +353,7 @@ if __name__== '__main__':
 	  file_name = os.path.basename(file.name)
 	  if 'frozen_inference_graph.pb' in file_name:
 	    tar_file.extract(file, os.getcwd())
+
 	"""
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
