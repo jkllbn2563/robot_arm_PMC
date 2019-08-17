@@ -197,9 +197,9 @@ def handle_function(req):
 	  min_score_thresh=.1,
 	  line_thickness=8)
 	#print(image_np.size)
-	plt.figure(figsize=IMAGE_SIZE)
-	plt.imshow(image_np)
-	plt.show()
+	#plt.figure(figsize=IMAGE_SIZE)
+	#plt.imshow(image_np)
+	#plt.show()
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
@@ -301,7 +301,7 @@ def handle_function(req):
 	bbox_box_one=bbox_data_box.pop(0)
 
 
-	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
+	bbox_data = bbox_tripod_one+bbox_camera_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
 	#print(len(bbox_data))
