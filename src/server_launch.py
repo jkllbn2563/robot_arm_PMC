@@ -203,7 +203,7 @@ def handle_function(req):
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
-	#print("image size is",high,width)
+	print("image size is",high,width)
 	#print (filtered_dict['detection_boxes'].shape)
 	#print(type(filtered_box_dict['detection_scores']))
 	#print("apple",filtered_camera_dict['detection_scores'])

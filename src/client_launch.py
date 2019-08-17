@@ -64,8 +64,8 @@ def bbox_calculation():
 
 if __name__=='__main__':
 	rospy.init_node('client_node',anonymous=True)
-	#rospy.Subscriber("/scorpio/mmp0/camera/color/image_raw",Image,rgb_callback)
-	rospy.Subscriber("/camera/color/image_raw",Image,rgb_callback)
+	rospy.Subscriber("/scorpio/mmp0/camera/color/image_raw",Image,rgb_callback)
+	#rospy.Subscriber("/camera/color/image_raw",Image,rgb_callback)
 
 	#time.sleep(5)
 	rospy.wait_for_service('object_detection')
