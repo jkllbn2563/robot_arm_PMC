@@ -194,7 +194,7 @@ def handle_function(req):
 	  category_index,
 	  instance_masks=output_dict.get('detection_masks'),
 	  use_normalized_coordinates=True,
-	  min_score_thresh=.1,
+	  min_score_thresh=.2,
 	  line_thickness=8)
 	#print(image_np.size)
 	#plt.figure(figsize=IMAGE_SIZE)
@@ -218,16 +218,16 @@ def handle_function(req):
 	#print(len(filtered_tripod_dict['detection_scores']),"hellow")
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
-		if v>0.1:
+		if v>0.2:
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
-		if v>0.1:
+		if v>0.2:
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_USB_dict['detection_scores']):
-		if v>0.1:
+		if v>0.2:
 			filtered_USB_num_dict['detection_boxes'].append(filtered_USB_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_tripod_dict['detection_scores']):
-		if v>0.1:
+		if v>0.2:
 			filtered_tripod_num_dict['detection_boxes'].append(filtered_tripod_dict['detection_boxes'].tolist()[i])
 
 	filtered_box_num_dict['detection_boxes']=np.array(filtered_box_num_dict['detection_boxes'])
