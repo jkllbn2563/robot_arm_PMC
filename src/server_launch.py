@@ -29,7 +29,7 @@ if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
 
 
 
-
+plt_counter = 0
 
 def load_image_into_numpy_array(image):
   (im_width, im_height) = image.size
@@ -101,6 +101,7 @@ def server_srv():
 
 
 def handle_function(req):
+	global plt_counter
 	bridge = CvBridge()
 	#object_name=req.obj_name
 
@@ -197,9 +198,11 @@ def handle_function(req):
 	  min_score_thresh=.1,
 	  line_thickness=8)
 	#print(image_np.size)
-	plt.figure(figsize=IMAGE_SIZE)
-	plt.imshow(image_np)
-	plt.show()
+	if plt_counter < 3:
+		plt.figure(figsize=IMAGE_SIZE)
+		plt.imshow(image_np)
+		plt.show()
+		plt_counter += 1
 	#plt.savefig('result.png')
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
@@ -301,7 +304,7 @@ def handle_function(req):
 	bbox_box_one=bbox_data_box.pop(0)
 
 
-	bbox_data = bbox_tripod_one+bbox_camera_one+bbox_USB_one+bbox_box_one
+	bbox_data = bbox_USB_one+bbox_tripod_one+bbox_camera_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
 	#print(len(bbox_data))
