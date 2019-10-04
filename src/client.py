@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
-from robot_arm.msg import coordinate
+from robot_arm_PMC.msg import coordinate
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import Point
 import time
@@ -31,7 +31,7 @@ def rgb_callback(image):
 	global img,receive_first_image
 
 	img=image
-	detection_client_willie()
+	#detection_client_willie()
 	receive_first_image=True
 
 def point_cloud_callback(image):
