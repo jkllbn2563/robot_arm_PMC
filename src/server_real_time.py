@@ -12,7 +12,7 @@ import tarfile
 import tensorflow as tf
 import zipfile
 import matplotlib.image as mpimg
-from sensor_msgs.msg import Image as Imagemsg
+
 from distutils.version import StrictVersion
 from collections import defaultdict
 from io import StringIO
@@ -29,10 +29,8 @@ if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
   raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
 
 #sys.setrecursionlimit(100000)
-img_detection_result=None
 
-#rospy.init_node('publish_image',anonymous=True)
-pub=rospy.Publisher('image_kinetic',Imagemsg,queue_size=10)
+
 
 def load_image_into_numpy_array(image):
   (im_width, im_height) = image.size
@@ -88,10 +86,13 @@ def run_inference_for_single_image(image, graph):
 
 
 
-
-
-
-
+"""
+def server_srv():
+	rospy.init_node('detection_server',anonymous=True)
+	s=rospy.Service('object_detection',detection,handle_function)
+	rospy.loginfo('Ready to caculate the bbox')
+	rospy.spin()
+"""
 
 def server_srv():
 	rospy.init_node('detection_server',anonymous=True)
@@ -194,27 +195,26 @@ def handle_function(req):
 	  category_index,
 	  instance_masks=output_dict.get('detection_masks'),
 	  use_normalized_coordinates=True,
-	  min_score_thresh=.8,
+	  min_score_thresh=.1,
 	  line_thickness=8)
 	print(image_np.size)
 
-	img_detection_result = bridge.cv2_to_imgmsg(image_np, encoding="passthrough")
 	#image_np_image=Image.fromarray(image_np,"RGB")
-	pub.publish(img_detection_result)
+
 	#plt.savefig("result.png")
 	#result_img=mpimg.imread("result.png")
 	#result_img=cv2.imread("result.png")
 	#cv2.namedWindow("object_detection")
-	#cv2.imshow("object_detection",result_imgimage_np)
-	#cv2.waitKey(1)
+	#cv2.imshow("object_detection",result_img)
+	#cv2.waitKey(0)
 	#cv2.destroyAllWindows()
 	#plt.figure(figsize=IMAGE_SIZE)
 	#plt.imshow(image_np_image)
-	#plt.imshow(image_np)
+	plt.imshow(image_np)
 
 	#plt.show()
 	#plt.close()
-	#plt.savefig('result.png')
+	plt.savefig('result.png')
 	#plt.close()
 
 	#im=Image.open('result.png')
@@ -239,22 +239,22 @@ def handle_function(req):
 	#print(len(filtered_tripod_dict['detection_scores']),"hellow")
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
-		if v>0.8:
+		if v>0.1:
 			#print(i,"p")
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
 
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
-		if v>0.8:
+		if v>0.1:
 			#print(i,"pp")
 
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_USB_dict['detection_scores']):
-		if v>0.8:
+		if v>0.1:
 			#print(i,"ppp")
 
 			filtered_USB_num_dict['detection_boxes'].append(filtered_USB_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_tripod_dict['detection_scores']):
-		if v>0.8:
+		if v>0.1:
 			#print(i,"pppp")
 			filtered_tripod_num_dict['detection_boxes'].append(filtered_tripod_dict['detection_boxes'].tolist()[i])
 
