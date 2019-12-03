@@ -244,7 +244,7 @@ def handle_function(req):
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
 
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
-		if v>0.8:
+		if v>0.4:
 			#print(i,"pp")
 
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])

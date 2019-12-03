@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge,CvBridgeError
-
+import cv2
 import numpy as np
 import os
 import six.moves.urllib as urllib
@@ -11,7 +11,8 @@ import sys
 import tarfile
 import tensorflow as tf
 import zipfile
-
+import matplotlib.image as mpimg
+from sensor_msgs.msg import Image as Imagemsg
 from distutils.version import StrictVersion
 from collections import defaultdict
 from io import StringIO
@@ -21,15 +22,17 @@ from utils import label_map_util
 
 from utils import visualization_utils as vis_util
 # This is needed since the notebook is stored in the object_detection folder.
-sys.path.append("..")
+#sys.path.append("..")
 from object_detection.utils import ops as utils_ops
 
 if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
   raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
 
+#sys.setrecursionlimit(100000)
+img_detection_result=None
 
-
-
+#rospy.init_node('publish_image',anonymous=True)
+pub=rospy.Publisher('image_kinetic',Imagemsg,queue_size=10)
 
 def load_image_into_numpy_array(image):
   (im_width, im_height) = image.size
@@ -85,13 +88,10 @@ def run_inference_for_single_image(image, graph):
 
 
 
-"""
-def server_srv():
-	rospy.init_node('detection_server',anonymous=True)
-	s=rospy.Service('object_detection',detection,handle_function)
-	rospy.loginfo('Ready to caculate the bbox')
-	rospy.spin()
-"""
+
+
+
+
 
 def server_srv():
 	rospy.init_node('detection_server',anonymous=True)
@@ -194,36 +194,68 @@ def handle_function(req):
 	  category_index,
 	  instance_masks=output_dict.get('detection_masks'),
 	  use_normalized_coordinates=True,
-	  min_score_thresh=.1,
+	  min_score_thresh=.8,
 	  line_thickness=8)
-	#print(image_np.size)
-	plt.figure(figsize=IMAGE_SIZE)
-	plt.imshow(image_np)
-	plt.show()
+	print(image_np.size)
+
+	img_detection_result = bridge.cv2_to_imgmsg(image_np, encoding="passthrough")
+	#image_np_image=Image.fromarray(image_np,"RGB")
+	pub.publish(img_detection_result)
+	#plt.savefig("result.png")
+	#result_img=mpimg.imread("result.png")
+	#result_img=cv2.imread("result.png")
+	#cv2.namedWindow("object_detection")
+	#cv2.imshow("object_detection",result_imgimage_np)
+	#cv2.waitKey(1)
+	#cv2.destroyAllWindows()
+	#plt.figure(figsize=IMAGE_SIZE)
+	#plt.imshow(image_np_image)
+	#plt.imshow(image_np)
+
+	#plt.show()
+	#plt.close()
 	#plt.savefig('result.png')
+	#plt.close()
+
+	#im=Image.open('result.png')
+	#im.show()
+
+
+	
 	img = Image.fromarray(image_np, 'RGB')
 	high,width=img.size
-	#print("image size is",high,width)
-	#print (filtered_dict['detection_boxes'].shape)
-	
+	print("image size is",high,width)
+	print (filtered_dict['detection_boxes'].shape)
+	#print(type(filtered_box_dict['detection_scores']))
+	#print("apple",filtered_camera_dict['detection_scores'])
+	#print(filtered_camera_dict['detection_boxes'])
+	#print(type(filtered_box_dict['detection_boxes']))
+	#print(len(filtered_box_dict['detection_scores']))
+	#print(len(filtered_box_dict['detection_boxes']))
+	#print(len(filtered_camera_dict['detection_scores']))
+	#print(len(filtered_camera_dict['detection_boxes']))
+	#print(len(filtered_USB_dict['detection_scores']))
+	#print(len(filtered_USB_dict['detection_boxes']))
+	#print(len(filtered_tripod_dict['detection_scores']),"hellow")
 
 	for i,v in enumerate(filtered_box_dict['detection_scores']):
-		if v>0.1:
+		if v>0.8:
 			#print(i,"p")
 			filtered_box_num_dict['detection_boxes'].append(filtered_box_dict['detection_boxes'].tolist()[i])
 
 	for i,v in enumerate(filtered_camera_dict['detection_scores']):
-		if v>0.1:
+		if v>0.2:
 			#print(i,"pp")
+
 
 			filtered_camera_num_dict['detection_boxes'].append(filtered_camera_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_USB_dict['detection_scores']):
-		if v>0.1:
+		if v>0.8:
 			#print(i,"ppp")
 
 			filtered_USB_num_dict['detection_boxes'].append(filtered_USB_dict['detection_boxes'].tolist()[i])
 	for i,v in enumerate(filtered_tripod_dict['detection_scores']):
-		if v>0.1:
+		if v>0.8:
 			#print(i,"pppp")
 			filtered_tripod_num_dict['detection_boxes'].append(filtered_tripod_dict['detection_boxes'].tolist()[i])
 
@@ -232,7 +264,7 @@ def handle_function(req):
 	filtered_tripod_num_dict['detection_boxes']=np.array(filtered_tripod_num_dict['detection_boxes'])
 	filtered_USB_num_dict['detection_boxes']=np.array(filtered_USB_num_dict['detection_boxes'])
 
-
+	print("confident_camera:",filtered_camera_dict['detection_scores'])
 
 	if (filtered_camera_num_dict['detection_boxes'].shape[0]==0):
 		print("There is no camera on the table")
@@ -285,7 +317,7 @@ def handle_function(req):
 	else:
 		#bbox_data_box=list(filtered_box_dict['detection_boxes'])
 		print(filtered_box_num_dict['detection_scores'])
-		#print(type(filtered_box_dict['detection_scores']))
+		print(type(filtered_box_dict['detection_scores']))
 		bbox_data_box=filtered_box_num_dict['detection_boxes'].tolist()
 
 		print("box num:",len(bbox_data_box),"on the table")
@@ -302,8 +334,8 @@ def handle_function(req):
 	bbox_data = bbox_camera_one+bbox_tripod_one+bbox_USB_one+bbox_box_one
 
 	#bbox_data = bbox_data_camera+bbox_data_tripod+bbox_data_USB+bbox_data_box
-	#print(len(bbox_data))
-	print("the whole things at ",bbox_data)
+	print(len(bbox_data))
+	print("bbox:the whole things at ",bbox_data)
 	#bbox_result=[]
 	#print(type(bbox_result))
 	#for i in bbox_data:
@@ -319,7 +351,6 @@ def handle_function(req):
 
 	return detection_PMCResponse(bbox_data)
   
-
 if __name__== '__main__':
 	# What model to download.
 	#MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
@@ -328,22 +359,14 @@ if __name__== '__main__':
 
 	# Path to frozen detection graph. This is the actual model that is used for the object detection.
 	#PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
-	PATH_TO_FROZEN_GRAPH = rospy.get_param("model_path")
+	PATH_TO_FROZEN_GRAPH = rospy.get_param("recognition_model_path")
 
 	# List of the strings that is used to add correct label for each box.
 	#PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 	#PATH_TO_LABELS = os.path.join('data', 'label_map.pbtxt')
 	PATH_TO_LABELS=rospy.get_param("label_path")
 
-	"""
-	opener = urllib.request.URLopener()
-	opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-	tar_file = tarfile.open(MODEL_FILE)
-	for file in tar_file.getmembers():
-	  file_name = os.path.basename(file.name)
-	  if 'frozen_inference_graph.pb' in file_name:
-	    tar_file.extract(file, os.getcwd())
-	"""
+	
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
 	  od_graph_def = tf.GraphDef()
@@ -361,4 +384,3 @@ if __name__== '__main__':
 	if rospy.is_shutdown():
 			exit(-1)
 	server_srv()
-

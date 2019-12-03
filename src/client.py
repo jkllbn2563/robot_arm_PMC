@@ -53,6 +53,7 @@ def handle_function_willie(req):
 	image_np1 = bridge.imgmsg_to_cv2(img, "rgb8")
 	from PIL import Image 
 	width,high= Image.fromarray(image_np1, 'RGB').size
+	#print("distance_test%.2f"%distance([0,0],[3,4]))
 	#width,high=image_.size
 	#print("image size is",high,width)
 	bbox_data=bbox_calculation()
@@ -75,7 +76,7 @@ def handle_function_willie(req):
 	if bbox_scale != [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]:
 		#print(bbox_scale)
 		print("detect object!!")
-		print(counter)
+		print("counter",counter)
 	if counter==4:
 		counter=0
 	if len(bbox_scale_list)<2:
@@ -88,23 +89,39 @@ def handle_function_willie(req):
 			print(bbox_scale_list[0][0:4])
 			print("camera")
 			print("center_camera",(bbox_scale_list[0][0]+bbox_scale_list[0][2])/2,(bbox_scale_list[0][1]+bbox_scale_list[0][3])/2,(bbox_scale_list[1][0]+bbox_scale_list[1][2])/2,(bbox_scale_list[1][1]+bbox_scale_list[1][3])/2)
-			camera_distance=distance([bbox_scale_list[0][0]+bbox_scale_list[0][2]/2,(bbox_scale_list[0][1]+bbox_scale_list[0][3])/2],[(bbox_scale_list[1][0]+bbox_scale_list[1][2])/2,(bbox_scale_list[1][1]+bbox_scale_list[1][3])/2])
-			print(camera_distance)
-			if camera_distance<120:
+			camera_distance=distance([(bbox_scale_list[0][0]+bbox_scale_list[0][2])/2,(bbox_scale_list[0][1]+bbox_scale_list[0][3])/2],[(bbox_scale_list[1][0]+bbox_scale_list[1][2])/2,(bbox_scale_list[1][1]+bbox_scale_list[1][3])/2])
+			print([(bbox_scale_list[0][0]+bbox_scale_list[0][2])/2,(bbox_scale_list[0][1]+bbox_scale_list[0][3])/2],[(bbox_scale_list[1][0]+bbox_scale_list[1][2])/2,(bbox_scale_list[1][1]+bbox_scale_list[1][3])/2])
+			print("camera_distance",camera_distance)
+			if camera_distance<60:
 				task_complete_score+=10
+				print("camera_complete_score",task_complete_score)
+			else:
+				print("The distance of camera center is large",camera_distance)
 		if bbox_scale_list[0][4:8] !=[0.0, 0.0, 0.0, 0.0]:
 			print("tsripod")
 			print("tripod_center",(bbox_scale_list[0][4]+bbox_scale_list[0][6])/2,(bbox_scale_list[0][5]+bbox_scale_list[0][7])/2,(bbox_scale_list[1][4]+bbox_scale_list[1][6])/2,(bbox_scale_list[1][5]+bbox_scale_list[1][7])/2)
-			tripod_distance=distance([bbox_scale_list[0][4]+bbox_scale_list[0][6]/2,(bbox_scale_list[0][5]+bbox_scale_list[0][7])/2],[(bbox_scale_list[1][4]+bbox_scale_list[1][6])/2,(bbox_scale_list[1][5]+bbox_scale_list[1][7])/2])
-			if tripod_distance<120:
+			tripod_distance=distance([(bbox_scale_list[0][4]+bbox_scale_list[0][6])/2,(bbox_scale_list[0][5]+bbox_scale_list[0][7])/2],[(bbox_scale_list[1][4]+bbox_scale_list[1][6])/2,(bbox_scale_list[1][5]+bbox_scale_list[1][7])/2])
+			print("tripod_distance",tripod_distance)
+
+			if tripod_distance<60:
 				task_complete_score+=10
+				print("camera_complete_score",task_complete_score)
+
+			else:
+				print("The distance of tripod center is large",tripod_distance)
+
 
 		if bbox_scale_list[0][8:12] !=[0.0, 0.0, 0.0, 0.0]:
 			print("USB")
 			print("USB_center",(bbox_scale_list[0][8]+bbox_scale_list[0][10])/2,(bbox_scale_list[0][9]+bbox_scale_list[0][11])/2,(bbox_scale_list[1][8]+bbox_scale_list[1][10])/2,(bbox_scale_list[1][9]+bbox_scale_list[1][11])/2)
-			USB_distance=distance([bbox_scale_list[0][8]+bbox_scale_list[0][10]/2,(bbox_scale_list[0][9]+bbox_scale_list[0][11])/2],[(bbox_scale_list[1][8]+bbox_scale_list[1][10])/2,(bbox_scale_list[1][9]+bbox_scale_list[1][11])/2])
-			if USB_distance<120:
+			USB_distance=distance([(bbox_scale_list[0][8]+bbox_scale_list[0][10])/2,(bbox_scale_list[0][9]+bbox_scale_list[0][11])/2],[(bbox_scale_list[1][8]+bbox_scale_list[1][10])/2,(bbox_scale_list[1][9]+bbox_scale_list[1][11])/2])
+			if USB_distance<60:
 				task_complete_score+=10
+				print("camera_complete_score",task_complete_score)
+			else:
+				print("The distance of USB center is large",USB_distance)
+
+
 		#print(bbox_scale_list[0][12:16])
 
 		if bbox_scale_list[0][12:16] !=[0.0, 0.0, 0.0, 0.0]:
@@ -112,13 +129,16 @@ def handle_function_willie(req):
 			print(bbox_scale_list[0][12:16])
 			
 			print("box_center",(bbox_scale_list[0][12]+bbox_scale_list[0][14])/2,(bbox_scale_list[0][13]+bbox_scale_list[0][15])/2,(bbox_scale_list[1][12]+bbox_scale_list[1][14])/2,(bbox_scale_list[1][13]+bbox_scale_list[1][15])/2)
-			box_distance=distance([bbox_scale_list[0][12]+bbox_scale_list[0][14]/2,(bbox_scale_list[0][13]+bbox_scale_list[0][15])/2],[(bbox_scale_list[1][12]+bbox_scale_list[1][14])/2,(bbox_scale_list[1][13]+bbox_scale_list[1][15])/2])
-			if box_distance<120:
+			box_distance=distance([(bbox_scale_list[0][12]+bbox_scale_list[0][14])/2,(bbox_scale_list[0][13]+bbox_scale_list[0][15])/2],[(bbox_scale_list[1][12]+bbox_scale_list[1][14])/2,(bbox_scale_list[1][13]+bbox_scale_list[1][15])/2])
+			if box_distance<60:
 				task_complete_score+=10
-			
+				print("camera_complete_score",task_complete_score)
 
-		
-		print(task_complete_score)		
+			else:
+				print("The distance of box center is large",box_distance)
+
+			
+		print("task_complete_score_final",task_complete_score)		
 		if task_complete_score>9:
 			task_complete=1
 			task_complete_score=0
@@ -129,7 +149,7 @@ def handle_function_willie(req):
 			print("It is not sure for static")
 		bbox_scale_list.pop(0)
 
-	if (counter==3)& (task_complete==1):
+	if (counter==2)& (task_complete==1):
 		print("the object is static !!")
 		counter=0
 		task_complete=0
@@ -170,7 +190,9 @@ def bbox_calculation():
 if __name__=='__main__':
 	rospy.init_node('client_node',anonymous=True)
 	#rospy.Subscriber("/c1/camera/rgb/image_raw",Image,rgb_callback)
-	rospy.Subscriber("/camera/rgb/image_raw",Image,rgb_callback,queue_size=1,buff_size=2**26)
+	#rospy.Subscriber("/camera/rgb/image_raw",Image,rgb_callback,queue_size=1,buff_size=2**26)
+	rospy.Subscriber("/camera/color/image_raw",Image,rgb_callback,queue_size=1,buff_size=2**26)
+
 	#rospy.Subscriber("/c1/camera/depth/points",PointCloud2,point_cloud_callback)
 	time.sleep(5)
 	rospy.wait_for_service('object_detection')
