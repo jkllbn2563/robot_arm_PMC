@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import rospy
-from robot_arm.srv import *
+from robot_arm_PMC.srv import *
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
-from robot_arm.msg import coordinate
+from robot_arm_PMC.msg import coordinate
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import Point
 import time

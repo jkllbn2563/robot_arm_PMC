@@ -23,7 +23,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -111,15 +112,16 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  #INCLUDE_DIRS include
+  INCLUDE_DIRS include
   LIBRARIES robot_arm
   CATKIN_DEPENDS message_runtime roscpp rospy sensor_msgs std_msgs
-  DEPENDS system_lib
+  #DEPENDS system_lib
  )
 #catkin_package(
-  # ...
-   #CATKIN_DEPENDS message_runtime ...
-   #...)
+  #INCLUDE_dIRS include
+   #LIBRARIES ros_cython_example
+  #CATKIN_DEPENDS roscpp rospy message_runtime
+  #)
 
 ###########
 ## Build ##
@@ -133,9 +135,7 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/robot_arm.cpp
-# )
+#add_library(ros_arm_PMC src/server.c)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -161,6 +161,22 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+
+## Cython settings
+#
+# set CMake module path for Cython
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# include CMake module for Cython
+include(UseCython)
+add_custom_target(ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ReplicatePythonSourceTree.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(src/cython)
+
+
+
 
 #############
 ## Install ##
