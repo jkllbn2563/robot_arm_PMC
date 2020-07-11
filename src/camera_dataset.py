@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import sys
 import os
-i=0
+i=1
 
 
 
@@ -29,11 +29,12 @@ def take(req):
 	plt.axis('off')
 	plt.savefig('train_'+str(i)+".png")
 	print(i)
+	#i=i+1
+	print("picture",i)
 	i=i+1
-	print("apple",i)
 	#print("fuck")
 
-	return TriggerResponse(success=True,message="the camera picture"+str(i)+" is save" )
+	return TriggerResponse(success=True,message="the camera picture"+str(i-1)+" is save" )
 
 def rgb_callback(image):
 		global i,img
@@ -41,12 +42,11 @@ def rgb_callback(image):
 
 if __name__=='__main__':
 	rospy.init_node('camera_node',anonymous=True)
-	print("banana")
 	#rospy.Subscriber("/c1/camera/rgb/image_raw",Image,rgb_callback)
-	rospy.Subscriber("/camera/rgb/image_raw",Image2,rgb_callback)
+	rospy.Subscriber("/camera/color/image_raw",Image2,rgb_callback,queue_size=1,buff_size=2**26)
 	#time.sleep(50)
-	print("apple")
 	rospy.Service('/photo',Trigger,take)
+	print("waiting for trigger")
 	
 
 	#rate=rospy.Rate(0.5)
